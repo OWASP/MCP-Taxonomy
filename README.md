@@ -10,6 +10,12 @@ Start with the complete reference:
 
 It is a single, combined document covering glossary, design principles, taxonomy structure, framework mappings, CVE-aligned tags, and external crosswalks.
 
+Also in this repository:
+
+**[MCP-Threat-Taxonomy.md](MCP-Threat-Taxonomy.md)**
+
+A structured threat classification: 30 threats across six domains (`T1.1`–`T6.5`) with severity ratings, an attack-chain matrix, kill-chain phases, and OWASP mappings.
+
 Maintained and curated by [Vandana Verma Sehgal](https://github.com/vermava)
 
 ## Complete reference (sections)
