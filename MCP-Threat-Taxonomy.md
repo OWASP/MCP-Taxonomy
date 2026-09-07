@@ -1,7 +1,7 @@
 # OWASP MCP Threat Taxonomy
 
 A structured classification of threats against Model Context Protocol (MCP) deployments.
-# MCP Threat Matrix
+## MCP Threat Matrix
 
 Attack chain visualization for MCP security incidents.
 
@@ -68,7 +68,7 @@ Attack chain visualization for MCP security incidents.
 ### 3. Execution
 - Inject prompts via tool descriptions (T1.1)
 - Tamper with tool responses (T1.4)
-- Expit indirect injection vectors (T4.2)
+- Exploit indirect injection vectors (T4.2)
 
 ### 4. Persistence
 - Modify server configuration (T2.5)
