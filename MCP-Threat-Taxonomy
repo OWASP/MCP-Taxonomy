@@ -157,16 +157,18 @@ Attack chain visualization for MCP security incidents.
 
 ## Mapping to OWASP
 
-| MCP Threat | OWASP LLM Top 10 | OWASP Top 10 |
-|------------|-------------------|--------------|
+Mappings reference the [OWASP Top 10 for LLM Applications 2025](https://genai.owasp.org/llm-top-10/) and the [OWASP Top 10 for Web Application Security 2021](https://owasp.org/Top10/).
+
+| MCP Threat | OWASP LLM Top 10 (2025) | OWASP Top 10 (2021) |
+|------------|-------------------------|---------------------|
 | T1.1 Tool Poisoning | LLM01 Prompt Injection | - |
-| T1.3 Tool Impersonation | LLM15 AI Supply Chain Attacks | A08 Software and Data Integrity |
+| T1.3 Tool Impersonation | LLM03 Supply Chain | A08 Software and Data Integrity Failures |
 | T2.1 Rug Pull | LLM01 Prompt Injection | A04 Insecure Design |
-| T3.1 Cross-Server Exfiltration | LLM07 Insecure Plugin Design | A01 Broken Access Control |
-| T3.2 Credential Leakage | LLM06 Sensitive Information Disclosure | A04 Insecure Design |
+| T3.1 Cross-Server Exfiltration | LLM06 Excessive Agency | A01 Broken Access Control |
+| T3.2 Credential Leakage | LLM02 Sensitive Information Disclosure | A04 Insecure Design |
 | T4.2 Indirect Prompt Injection | LLM01 Prompt Injection | A03 Injection |
-| T5.1 Token Theft | - | A07 Identification and Authentication Failures |
-| T6.3 Supply Chain Attack | LLM15 AI Supply Chain Attacks | A08 Software and Data Integrity |
+| T5.1 Token Theft | LLM02 Sensitive Information Disclosure | A07 Identification and Authentication Failures |
+| T6.3 Supply Chain Attack | LLM03 Supply Chain | A08 Software and Data Integrity Failures |
 
 ## Usage
 
