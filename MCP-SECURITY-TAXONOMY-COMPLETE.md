@@ -712,11 +712,13 @@ This subsection defines core Model Context Protocol terms used across the reposi
 
 <h3 id="root">Root</h3>
 
-**Definition:** A client-provided boundary that can tell a server which filesystem locations or URI scopes are relevant or permitted.
+**Definition:** A client-provided filesystem location that tells a server which directories or files are relevant to its work. Roots are informational guidance, not an access-control mechanism; the protocol does not enforce that servers stay within them.
 
-**Security relevance:** Roots can help limit file access, but they are not a complete sandbox by themselves. Servers must still enforce path validation and access checks.
+**Security relevance:** Advertising a root does not grant or restrict filesystem permissions. Servers must enforce path validation and access checks independently; roots are not a sandbox.
 
-**Example:** An IDE may expose only `/workspace/project-a` as a root instead of the entire home directory.
+**Protocol status:** Roots are deprecated as of MCP `2026-07-28`. The [MCP roots specification](https://modelcontextprotocol.io/specification/2026-07-28/client/roots) recommends that new implementations not adopt roots and that existing implementations migrate to passing directories or files through tool parameters, resource URIs, or server configuration. Roots remain relevant when assessing deployments that still support them.
+
+**Example:** An IDE may advertise `file:///workspace/project-a` as a root. This alone does not prevent a server from accessing files outside that directory.
 
 ---
 
@@ -1920,7 +1922,7 @@ This subsection defines traditional security terms used throughout MCP security 
 
 **Definition:** A vulnerability where an attacker accesses files outside an intended directory using path manipulation.
 
-**MCP relevance:** File resources and tools must constrain paths to approved roots.
+**MCP relevance:** File resources and tools must enforce path restrictions against authorized filesystem locations. Client-advertised MCP roots alone do not enforce those restrictions.
 
 **Example:** `../../../../.ssh/id_rsa`.
 
