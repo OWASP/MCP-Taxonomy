@@ -36,6 +36,7 @@
    - [Request](#request)
    - [Response](#response)
    - [Notification](#notification)
+   - [Logging](#logging)
    - [Capability](#capability)
    - [Capability Negotiation](#capability-negotiation)
    - [Tool Registry](#tool-registry)
@@ -628,6 +629,20 @@ This subsection defines core Model Context Protocol terms used across the reposi
 
 
 
+<h3 id="logging">Logging</h3>
+
+**Definition:** The MCP server utility for sending structured log messages to a client during a connection.
+
+**Security relevance:** Log messages can disclose prompts, tool arguments, identifiers, or other sensitive data. Clients and servers should apply access controls, redaction, retention, and integrity protections rather than treating protocol logging as an audit trail by itself.
+
+**Protocol status:** Logging is deprecated as of the MCP `2026-07-28` specification. Existing implementations remain functional during the deprecation period, but new implementations should prefer `stderr` for local `stdio` diagnostics and OpenTelemetry or another structured observability system for application telemetry. See [SEP-2577](https://modelcontextprotocol.io/seps/2577-deprecate-roots-sampling-and-logging).
+
+**Example:** A server emits a debug message describing a failed tool call without including credentials or full user content.
+
+---
+
+
+
 <h3 id="capability">Capability</h3>
 
 **Definition:** A feature that a client or server declares it supports, such as tools, resources, prompts, subscriptions, logging, or sampling.
@@ -727,6 +742,8 @@ This subsection defines core Model Context Protocol terms used across the reposi
 **Definition:** A client feature where a server can request the client to perform an LLM interaction.
 
 **Security relevance:** Sampling can create recursive or server-initiated model behavior. It requires explicit user approval, prompt visibility, and controls over what the server can see.
+
+**Protocol status:** Sampling is deprecated as of the MCP `2026-07-28` specification. Existing implementations remain functional during the deprecation period, but new implementations should prefer direct integration with the LLM provider API. Servers must issue sampling requests only in association with an originating client request, as described in [SEP-2260](https://modelcontextprotocol.io/seps/2260-Require-Server-requests-to-be-associated-with-Client-requests).
 
 **Example:** A server asks the host model to summarize a document before continuing a workflow.
 
@@ -2217,5 +2234,4 @@ These families recur across **[mcp-cve-project](https://github.com/vermava/mcp-c
 | **SkillAudit — OWASP API/LLM mapping to MCP**                                             | [https://skillaudit.dev/seo/mcp-server-security-owasp](https://skillaudit.dev/seo/mcp-server-security-owasp)                                                                                                                                                                                                                 |
 | **MAESTRO framework overview**                                                            | [https://prefactor.tech/blog/maestro-framework-threat-modeling-for-ai-agents](https://prefactor.tech/blog/maestro-framework-threat-modeling-for-ai-agents)                                                                                                                                                                   |
 | **eSentire — MCP security for CISOs**                                                     | [https://www.esentire.com/blog/model-context-protocol-security-critical-vulnerabilities-every-ciso-should-address-in-2025](https://www.esentire.com/blog/model-context-protocol-security-critical-vulnerabilities-every-ciso-should-address-in-2025)                                                                         |
-
 
