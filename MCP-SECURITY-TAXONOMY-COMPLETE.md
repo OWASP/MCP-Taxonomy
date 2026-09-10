@@ -1555,6 +1555,8 @@ This subsection defines traditional security terms used throughout MCP security 
 
 **Example:** Run an MCP server in a container with read-only filesystem access and no outbound network by default.
 
+**Pitfall — containment intent without a valid technical primitive:** A "sandbox" is only as strong as the primitive underneath it. Language-runtime in-process constructs advertised as sandboxes (e.g., Node.js's `vm`/`vm.createContext` module, whose own documentation states it "is not a security mechanism" and should not run untrusted code) share the host process's realm objects. A convenience object passed into such a context for caller ergonomics (e.g., `Buffer`) can retain a reference to the host's own `Function` constructor rather than one confined to the sandboxed realm, enabling a documented constructor-chain escape back to the host process (its `process` object, environment variables, filesystem, and network) — a class of vm-escape technique that is publicly documented for this runtime and not specific to any one server. This was observed, during an independent multi-domain review of deployed MCP servers, in a tool advertised as running arbitrary user-supplied expressions against a sensitive-data payload (health records), with no `destructiveHint`/risk annotation distinguishing it from the server's genuinely read-only tools. The general lesson: evaluate whether a "sandbox" is actually a process-isolation or hardware-isolation boundary (a separate worker process with no host secrets, an isolate-based sandbox used per its documented security guidance, gVisor, Firecracker) versus an in-process language construct that was never designed to hold against untrusted code — and, at minimum, annotate any arbitrary-code-execution tool as destructive/high-risk regardless of which primitive backs it.
+
 ---
 
 
@@ -2092,7 +2094,7 @@ These families recur across **[mcp-cve-project](https://github.com/vermava/mcp-c
 | **INJ-SQL**               | SQL assembled from model/user/tool parameters                          | Second-order SQLi via retrieved content        |
 | **INJ-KQL** / **INJ-DSL** | Domain/query languages (KQL, templates) built from untrusted fragments | Query concatenation in data explorers          |
 | **INJ-DESER**             | Unsafe serialization/pickling across stdio or IPC                      | Trusted-type confusion, code execution gadgets |
-| **CODE-EXEC**             | Arbitrary code evaluation endpoints advertised as “analysis”           | `exec`, `eval`, notebook-style sandboxes       |
+| **CODE-EXEC**             | Arbitrary code evaluation endpoints advertised as “analysis”           | `exec`, `eval`, notebook-style sandboxes; in-process language constructs (e.g. Node.js `vm`) presented as sandboxes despite documented lack of a security boundary — see [Sandboxing](#sandboxing) |
 
 
 
