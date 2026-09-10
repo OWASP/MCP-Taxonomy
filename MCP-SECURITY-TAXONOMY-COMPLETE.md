@@ -1956,6 +1956,14 @@ This subsection defines traditional security terms used throughout MCP security 
 
 **MCP relevance:** Broad permissions, many tools, external network access, and access to secrets increase blast radius.
 
+**Beyond the server's own code — three properties that also drive real-world severity:**
+
+- **Platform reversibility.** Does the backend the tool ultimately calls treat the operation as recoverable (a soft-delete, a cancelable order, a moderated post) or as destructive (a hard delete, an irreversible on-chain transaction, a broadcast message)? Two structurally identical, unannotated `delete_*` tools can carry very different real-world blast radius depending on this property of the *wrapped platform's* API contract — not of the MCP server's code.
+- **Hosting transparency.** Is the server self-hosted and auditable by the operator, or vendor-hosted and opaque, where the operator's only visibility is a README and an OAuth flow? Opacity doesn't imply insecurity, but it does mean severity can't be assessed by reading the server's source at all — because there may be no server-side source to read.
+- **Execution locus.** For a tool that makes an outbound network request, does that request originate from the MCP server's own process (its own network position), or is it proxied through vendor-side infrastructure? This doesn't change whether a request-forgery flaw exists in the tool's logic, but it changes which network is actually exposed if one is exploited — relevant when scoring an SSRF finding's real severity, not just its presence.
+
+An independent multi-domain code review of production MCP servers found unannotated `delete_*` tools against a soft-delete backend, a default-to-simulated (paper-trading) environment that only became live after explicit operator opt-in, and search/fetch tools that proxied requests to vendor infrastructure rather than the server's own host — three concrete cases where the same-looking tool definition carried different real severity for exactly these three reasons.
+
 ---
 
 
