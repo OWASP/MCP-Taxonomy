@@ -1264,6 +1264,8 @@ A **toxic flow** is a dataflow across tools where individually permitted steps c
 
 **Example:** Require approval before deleting files, sending external messages, merging code, or changing cloud infrastructure.
 
+**Observed in practice:** Rather than an operator opting in per tool, the strongest implementations auto-derive the confirmation requirement from a tool's own risk annotation (e.g., any tool marked destructive is gated automatically), so new tools are safe by construction instead of by manual configuration that can be forgotten.
+
 ---
 
 
@@ -1371,6 +1373,8 @@ A **toxic flow** is a dataflow across tools where individually permitted steps c
 **Security relevance:** MCP agents can become confused deputies if untrusted content convinces them to use privileged tools.
 
 **Example:** A public webpage tricks an internal agent into calling a privileged internal API.
+
+**Observed in practice:** Two independent mitigation shapes recur in deployed servers: (1) dynamic per-request identity delegation, where the backend receives the calling user's own token rather than a shared server credential and makes its own authorization decision; and (2), stronger still, a design where the real credential never crosses the MCP protocol boundary at all — the caller only ever holds an opaque alias, with the actual secret encrypted at rest behind it. The latter was rarer than the former across a multi-domain sample of production servers.
 
 ---
 
@@ -1567,6 +1571,8 @@ This subsection defines traditional security terms used throughout MCP security 
 
 **Example:** A code review agent gets read-only access to one repository, not organization-wide admin access.
 
+**Observed in practice:** A recurring meta-pattern across production servers: the strongest least-privilege configuration is often fully implemented in code (read-only mode, allow/block lists, field-level response filtering) but shipped **disabled by default**, requiring explicit operator opt-in via an environment variable or config flag. Building the mechanism and defaulting it to permissive are two separate decisions, and projects that get the first right do not always get the second right — worth checking independently when reviewing a server's actual deployed configuration, not just its capabilities.
+
 ---
 
 
@@ -1590,6 +1596,8 @@ This subsection defines traditional security terms used throughout MCP security 
 **Security relevance:** Use allowlists for approved MCP servers, trusted registries, safe tools, permitted domains, and approved file paths.
 
 **Example:** Only allow network egress to `api.company.com` from a production MCP server.
+
+**Observed in practice:** For SSRF-sensitive tools specifically, the stronger form of an allowlist goes beyond checking the requested hostname/domain: it pins the outbound connection to the IP address that was actually validated, rather than re-resolving the hostname at connect time (a DNS-rebinding-style gap). Both the "allow only these domains" check and the "pin to the validated IP" check were needed together in the strongest examples we found; either alone left a gap.
 
 ---
 
@@ -1945,6 +1953,8 @@ This subsection defines traditional security terms used throughout MCP security 
 **Security relevance:** Rate limiting reduces brute force, abuse, runaway agents, model denial of service, and costly tool loops.
 
 **MCP example:** Limit `send_email` to 10 external emails per user per hour unless approved.
+
+**Observed in practice:** The mechanism that matters most is *who controls the limit*. Server-side budgets, circuit breakers, and per-agent spending caps that a compromised or misled agent cannot raise or disable through any tool parameter it controls are meaningfully stronger than a client-side or prompt-level limit, because they hold even if the model itself is the thing that's been manipulated.
 
 ---
 
