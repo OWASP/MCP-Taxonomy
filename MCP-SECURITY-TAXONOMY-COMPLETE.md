@@ -2073,6 +2073,18 @@ The OWASP MCP Top 10 provides an MCP-native way to classify risks that emerge wh
 | MCP09: Shadow MCP Servers                                                | Unapproved MCP servers appear outside governance, often on developer laptops, internal networks, or test environments                 | Developer runs an experimental MCP server with broad filesystem access and no auth                             | Shadow AI risk, policy bypass, unmanaged attack surface                | MCP inventory, endpoint discovery, registry governance, developer guidance, network controls                      |
 | MCP10: Context Injection & Over-Sharing                                  | Context is polluted, shared too broadly, persisted incorrectly, or exposed across users, tools, agents, or sessions                   | Agent sees another user’s task data; internal docs are included in unrelated prompt context                    | Sensitive data disclosure, cross-tenant leakage, decision manipulation | Context minimization, tenant isolation, memory boundaries, data classification, retrieval filtering               |
 
+<h3 id="layer-based-governance-crosswalk">Cross-walk: a layer-based authorization-governance view</h3>
+
+Some empirical audits of deployed MCP servers describe authorization governance as three layers plus an orthogonal axis, rather than (or alongside) the ten categories above: **control-plane exposure** (how much of an underlying API's surface becomes a callable tool, vs. a scoped subset), **execution and trust delegation** (shared static credential vs. per-request identity delegation, and whether high-impact mutations require confirmation), **protocol-level risk signaling** (whether native tool annotations such as `destructiveHint` are used to tell the client how risky a tool is), and an **implementation-integrity** axis orthogonal to all three (when a boundary is attempted, is it correctly built). The table below cross-references that view against this Top 10, for readers who encounter both framings.
+
+| Layer / axis | Closest Top 10 categor(y/ies) | Note |
+| --- | --- | --- |
+| Control-plane exposure | MCP02 (Privilege Escalation via Scope Creep) | A 1:1 mapping of an API's full control plane onto tools, with no reduction for least privilege, is a control-plane-exposure failure before it is ever a scope-creep *event*. |
+| Execution and trust delegation | MCP05 (Command Injection & Execution); MCP07 (Insufficient Authentication & Authorization) | Covers both *how* authority is delegated (shared credential vs. per-request) and *whether* mutation requires confirmation. |
+| Protocol-level risk signaling | Partially MCP06 (Intent Flow Subversion) | No Top 10 category is dedicated specifically to the absence of native tool-risk annotations as its own failure mode. |
+| Implementation integrity (orthogonal) | MCP05 | Applies to a boundary's own correctness (e.g., a sandbox that doesn't actually isolate) rather than to its absence. |
+| Containment intent without a valid technical primitive (e.g., an in-process language construct such as Node.js's `vm` module presented as a "sandbox" despite its own documentation disclaiming any security guarantee — see [Sandboxing](#sandboxing)) | *No exact match* | This specific failure mode — a component is reasoned about, and named, as a security boundary that structurally cannot provide one — doesn't fit cleanly under any single MCP01–MCP10 category as currently scoped. Flagged here as a candidate gap for a future revision of the Top 10, not asserted as a defect of it. |
+
 
 ---
 
