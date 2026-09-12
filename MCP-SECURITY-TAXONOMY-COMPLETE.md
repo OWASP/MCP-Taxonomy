@@ -117,6 +117,7 @@
    - [Sandboxing](#sandboxing)
    - [Least Privilege](#least-privilege)
    - [Deny by Default](#deny-by-default)
+   - [Deployment-Surface Defaults](#deployment-surface-defaults)
    - [Allowlist](#allowlist)
    - [Blocklist](#blocklist)
    - [Authentication](#authentication-1)
@@ -1578,6 +1579,18 @@ This subsection defines traditional security terms used throughout MCP security 
 **Security relevance:** MCP clients and gateways should default to denying unknown servers, new tools, sensitive actions, and untrusted workspaces.
 
 **Example:** A new tool added by a server is disabled until reviewed.
+
+---
+
+
+
+<h3 id="deployment-surface-defaults">Deployment-Surface Defaults</h3>
+
+**Definition:** The security posture of an MCP server's default deployment configuration (container defaults, exposed ports, bundled credentials, default network bindings) — distinct from the tool-call surface the MCP protocol itself governs.
+
+**Security relevance:** All of MCP's protocol-level controls (tool annotations, allow/deny lists, confirmation gates) assume an attacker reaches the server *through* the protocol — a request the MCP client or the model makes. They say nothing about a server whose containerized deployment ships with a hardcoded default credential and a service bound to all network interfaces rather than loopback-only, reachable by anyone who finds the port, independent of anything an MCP client or LLM caller does. This is a distinct risk axis from the three governed by tool-level annotations, worth checking separately when auditing a server's Docker/deployment artifacts rather than only its tool implementations. It is a particular concern for servers whose own value proposition is a human-oversight mechanism (e.g., a remote-desktop view into an autonomous agent's live session) — if that mechanism's own default configuration is insecure, the oversight control becomes the vector it was meant to guard against.
+
+**Example:** A container's startup script falls back to a literal hardcoded password whenever an operator hasn't mounted their own secret, and the documented standard-usage example maps the resulting service's port to the host.
 
 ---
 
